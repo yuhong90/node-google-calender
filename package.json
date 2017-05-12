@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.1",
+    "deepmerge": "^1.3.2",
     "google-oauth-jwt": "^0.2.0",
     "request-promise": "^4.1.0"
   },
