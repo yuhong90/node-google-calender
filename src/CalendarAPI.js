@@ -1,6 +1,8 @@
 const Promise = require('bluebird');
 const requestWithJWT = Promise.promisify(require('google-oauth-jwt').requestWithJWT());
 const qs = require('querystring');
+const deepmerge = require('deepmerge');
+
 class CalendarAPI {
 
   constructor(config) {
@@ -73,7 +75,7 @@ class CalendarAPI {
    * @param {string} location - Location description of event
    * @param {string} status - event status - confirmed, tentative, cancelled; tentative for all queuing
    */
-  insertEvent(calendarId, eventSummary, startDateTime, endDateTime, location, status, description, colour) {
+  insertEvent(calendarId, eventSummary, startDateTime, endDateTime, location, status, description, colour, additionalOptions) {
     this._checkCalendarId(calendarId);
     let event = {
       "start": {
@@ -89,11 +91,13 @@ class CalendarAPI {
       "colorId": colour,
     };
 
+    const eventWithAdditionalOptions = additionalOptions ? deepmerge(event, additionalOptions) : event;
+
     let options = {
       method: 'POST',
       url: 'https://www.googleapis.com/calendar/v3/calendars/' + calendarId + '/events',
       json: true,
-      body: event,
+      body: eventWithAdditionalOptions,
       jwt: this._JWT
     };
 
